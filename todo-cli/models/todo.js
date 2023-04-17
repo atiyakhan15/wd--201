@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
       // FILL IN HERE
       console.log(
         (await Todo.dueToday())
-          .map((todo) => todo.displayableString1())
+          .map((todo) => todo.displayable())
           .join("\n")
       );
       console.log("\n");
@@ -77,7 +77,7 @@ module.exports = (sequelize, DataTypes) => {
         }
       );
     }
-    displayableString1() {
+    displayable() {
     let checkbox = this.completed ? "[x]" : "[ ]";
     return `${this.id}. ${checkbox} ${this.title} `;
   }
