@@ -77,18 +77,15 @@ module.exports = (sequelize, DataTypes) => {
         }
       );
     }
-    displayableString() {
-  let checkbox = this.completed ? "[x]" : "[ ]";
-  const now = new Date();
-const formattedDate = now.toISOString().substring(0, 10);
-  let dueDate = this.dueDate;
-  if (dueDate !== formattedDate) {
-    return `${this.id}. ${checkbox} ${this.title} ${dueDate}`.trim();
-  } else {
-    return `${this.id}. ${checkbox} ${this.title}`.trim();
-  }
-}
 
+    displayableString() {
+      let checkbox = this.completed ? "[x]" : "[ ]";
+      return `${this.id}. ${checkbox} ${this.title} ${
+        this.dueDate == new Date().toLocaleDateString("en-CA")
+          ? ""
+          : this.dueDate
+      }`.trim();
+    }
   }
   Todo.init(
     {
