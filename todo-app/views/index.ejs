@@ -1,0 +1,18 @@
+<html>
+  <link href="./css/style.css" rel="stylesheet">
+<head>
+    <title>sanket jambhulkar</title>
+</head>
+<body>
+    <%- include("header.ejs") %>
+    <table>
+      <% for(var i=0;i<allTodos.length;i++){ %>
+      <tr>
+        <td>
+          <%= allTodos[i].title %>
+        </td>
+      </tr>
+      <% } %>
+    </table>
+</body>
+</html>

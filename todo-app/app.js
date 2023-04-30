@@ -1,15 +1,30 @@
 const { Todo } = require("./models");
 const express = require("express");
 const app = express();
+const path = require("path");
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
-app.get("/", function (request, response) {
-  response.send("the great sanket jambhulkar ");
+app.set("view engine", "ejs");
+app.get("/", async function (request, response) {
+  const allTodos = await Todo.getTodos();
+  const acceptsHTML = request.get("Accept").includes("text/html");
+
+  if (acceptsHTML) {
+    response.render("index", {
+      allTodos,
+    });
+  } else {
+    response.json({
+      allTodos,
+    });
+  }
 });
+/* eslint-disable-next-line no-undef */
+app.use(express.static(path.join(__dirname, "public")));
 /* eslint-disable-next-line no-unused-vars */
 app.get("/todos", async function (_request, response) {
   console.log("Processing list of all Todos ...");
-  // FILL IN YOUR CODE HERE
+  // FILL IN YOUR CODE HE
   try {
     const todos = await Todo.findAll();
     return response.json(todos);
