@@ -3,7 +3,9 @@ body {
   font-family: Sans-Serif;
   background: linear-gradient(to right top, hsl(350, 89.2%, 60.2%), hsl(189, 94.5%, 42.7%), hsl(351, 94.5%, 71.4%));
 }
-
+  .Todo-Item:hover .Trash-icon{
+    display: block;
+  }
 /* For mobile devices */
 @media only screen and (max-width: 600px) {
   /* Change the selector to :focus */
@@ -12,7 +14,8 @@ body {
   }
   
   /* Show the trash icon by default on small screens */
-  .Todo-Item .Trash-icon{
+  .Todo-Item:hover .Trash-icon{
     display: block;
   }
 }
+

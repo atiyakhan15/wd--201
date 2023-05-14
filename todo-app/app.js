@@ -1,26 +1,49 @@
-const { Todo } = require("./models");
 const express = require("express");
 const app = express();
-const path = require("path");
+var csrf = require("tiny-csrf");
 const bodyParser = require("body-parser");
+var cookieParser = require("cookie-parser");
 app.use(bodyParser.json());
+const path = require("path");
+const { Todo } = require("./models");
+// eslint-disable-next-line no-unused-vars
+const todo = require("./models/todo");
+app.use(express.static(path.join(__dirname, "public")));
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser("shh! some secret string"));
+app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
+
 app.set("view engine", "ejs");
 app.get("/", async function (request, response) {
-  const allTodos = await Todo.getTodos();
-  const acceptsHTML = request.get("Accept").includes("text/html");
-
+  const overdue = await Todo.overdue();
+  const dueLater = await Todo.dueLater();
+  const dueToday = await Todo.dueToday();
+  const Completed_Items = await Todo.completed_Items();
+  const acceptsHTML =
+    request && request.get("Accept")
+      ? request.get("Accept").includes("text/html")
+      : false;
   if (acceptsHTML) {
     response.render("index", {
-      allTodos,
+      title: "Todo application",
+      overdue,
+      dueToday,
+      dueLater,
+      Completed_Items,
+      csrfToken: request.csrfToken(),
     });
   } else {
     response.json({
-      allTodos,
+      overdue,
+      dueToday,
+      dueLater,
+      Completed_Items,
     });
   }
 });
 /* eslint-disable-next-line no-undef */
 app.use(express.static(path.join(__dirname, "public")));
+app.use(express.urlencoded({ extended: false }));
 /* eslint-disable-next-line no-unused-vars */
 app.get("/todos", async function (_request, response) {
   console.log("Processing list of all Todos ...");
@@ -52,31 +75,32 @@ app.post("/todos", async function (request, response) {
       dueDate: request.body.dueDate,
       completed: false,
     });
-    return response.json(todo);
+    return response.redirect("/");
   } catch (error) {
     console.log(error);
     return response.status(422).json(error);
   }
 });
-app.put("/todos/:id/markAsCompleted", async function (request, response) {
-  console.log("We have to update a Todo with ID: ", request.params.id);
+app.put("/todos/:id", async (request, response) => {
+  console.log("Mark Todo as completed:", request.params.id);
   const todo = await Todo.findByPk(request.params.id);
   try {
-    const updatedTodo = await todo.markAsCompleted();
-    return response.json(updatedTodo);
+    const updatedtodo = await todo.setCompletionStatus(request.body.completed);
+    return response.json(updatedtodo);
   } catch (error) {
     console.log(error);
     return response.status(422).json(error);
   }
 });
 /* eslint-disable-next-line no-unused-vars */
-app.delete("/todos/:id", async function (request, response) {
-  console.log("We have to delete a Todo with ID: ", request.params.id);
-  // FILL IN YOUR CODE HERE
-  const deleteTodo = await Todo.destroy({ where: { id: request.params.id } });
-  response.send(deleteTodo ? true : false);
-  // First, we have to query our database to delete a Todo by ID.
-  // Then, we have to respond back with true/false based on whether the Todo was deleted or not.
-  // response.send(true)
+app.delete("/todos/:id", async (request, response) => {
+  console.log("delete a todo with ID:", request.params.id);
+  try {
+    await Todo.remove(request.params.id);
+    return response.json({ success: true });
+  } catch (error) {
+    return response.status(422).json(error);
+  }
 });
+
 module.exports = app;
