@@ -11,15 +11,4 @@ body {
 .Todo-Item:hover .Trash-icon {
   display: block;
 }
-/* For mobile devices */
-@media only screen and (max-width: 600px) {
-  /* Change the selector to :focus */
-  .Todo-Item:focus .Trash-icon {
-    display: block;
-  }
 
-  /* Show the trash icon by default on small screens */
-  .Todo-Item:hover .Trash-icon {
-    display: block;
-  }
-}
