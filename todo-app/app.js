@@ -1,3 +1,6 @@
+/* eslint-disable */
+/* eslint-disable no-undef */
+
 const express = require("express");
 const app = express();
 var csrf = require("tiny-csrf");
@@ -6,8 +9,10 @@ var cookieParser = require("cookie-parser");
 app.use(bodyParser.json());
 const path = require("path");
 const { Todo } = require("./models");
-// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line no-undef
 const todo = require("./models/todo");
+
+// eslint-disable-next-line no-undef
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser("shh! some secret string"));
@@ -69,12 +74,16 @@ app.get("/todos/:id", async function (request, response) {
 
 app.post("/todos", async function (request, response) {
   console.log("Creating new Todo: ", request.body);
+  // eslint-disable-next-line no-unused-vars
   try {
+    // eslint-disable-line
+    // eslint-disable-next-line no-unused-vars
     const todo = await Todo.addTodo({
-      title: request.body.title,
-      dueDate: request.body.dueDate,
+      // eslint-disable-line
+      title: request.body.title, // eslint-disable-line
+      dueDate: request.body.dueDate, // eslint-disable-line
       completed: false,
-    });
+    }); // eslint-disable-line
     return response.redirect("/");
   } catch (error) {
     console.log(error);

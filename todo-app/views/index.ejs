@@ -74,6 +74,7 @@ function deleteTodo(id) {
         type="date"
         name="dueDate"
         class="border border-gray-300 rounded text-gray-900 w-full p-2 text-sm leading-4	"
+        required
       />
     </div>
     <div class="flex-none">
@@ -89,6 +90,7 @@ function deleteTodo(id) {
         <%- include('todos.ejs',{title:"overdue",data:overdue}) %>
         <%- include('todos.ejs',{title:"dueToday",data:dueToday}) %>
         <%- include('todos.ejs',{title:"dueLater",data:dueLater}) %>
+        <%- include('todos.ejs',{title:"completed todos",data:Completed_Items}) %>
       </div>
     </div>
         <%- include('footer.ejs') %>
