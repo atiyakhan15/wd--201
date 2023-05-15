@@ -63,6 +63,33 @@ describe("Todo test suite ", () => {
       expect(parsedUpdateResponse.completed).toBe(true);
     }
   });
+  test("Mark todo as incompleted (Updating Todo)", async () => {
+    let res = await agent.get("/");
+    let csrfToken = extractCsrfToken(res);
+    await agent.post("/todos").send({
+      title: "Buy dairymilk",
+      dueDate: new Date().toISOString(),
+      completed: true,
+      _csrf: csrfToken,
+    });
+    const groupedTodosResponse = await agent
+      .get("/")
+      .set("Accept", "application/json");
+    const parsedGroupedResponse = JSON.parse(groupedTodosResponse.text);
+    const dueTodayCount = parsedGroupedResponse.dueToday.length;
+    if (dueTodayCount > 0) {
+      const latestTodo = parsedGroupedResponse.dueToday[dueTodayCount - 1];
+      const status = !latestTodo.completed;
+      res = await agent.get("/");
+      csrfToken = extractCsrfToken(res);
+      const response = await agent.put(`todos/${latestTodo.id}`).send({
+        _csrf: csrfToken,
+        completed: status,
+      });
+      const parsedUpdateResponse = JSON.parse(response.text);
+      expect(parsedUpdateResponse.completed).toBe(false);
+    }
+  });
 
   test(" Delete todo using ID", async () => {
     let res = await agent.get("/");
