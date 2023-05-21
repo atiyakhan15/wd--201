@@ -9,6 +9,6 @@ body {
   );
 }
 .Todo-Item:hover .Trash-icon {
-  display: block;
+  display: inline-block;
 }
 
