@@ -138,7 +138,7 @@ app.post("/users", async (request, response) => {
       if (err) {
         console.log(err);
       }
-      response.redirect("/todo");
+      response.redirect("/todos");
     });
   } catch (error) {
     console.log(error);
@@ -193,11 +193,11 @@ app.post(
   async (request, response) => {
     if (request.body.title.length == 0) {
       request.flash("error", "Title can not be empty!");
-      return response.redirect("/todo");
+      return response.redirect("/todos");
     }
     if (request.body.dueDate.length == 0) {
       request.flash("error", "Due date can not be empty!");
-      return response.redirect("/todo");
+      return response.redirect("/todos");
     }
     console.log("creating new todo", request.body);
     try {
@@ -208,7 +208,7 @@ app.post(
         completed: false,
         userId: request.user.id,
       });
-      return response.redirect("/todo");
+      return response.redirect("/todos");
     } catch (error) {
       console.log(error);
       return response.status(422).json(error);
