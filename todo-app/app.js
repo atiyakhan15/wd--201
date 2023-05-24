@@ -160,20 +160,25 @@ app.use(express.urlencoded({ extended: false }));
 app.get(
   "/todos",
   connectEnsureLogin.ensureLoggedIn(),
-  async function (request, response) {
-    const requestuser = request.user.id;
-    const overdue = await Todo.overdue(requestuser);
-    const dueLater = await Todo.dueLater(requestuser);
-    const dueToday = await Todo.dueToday(requestuser);
-    const Completed_Items = await Todo.completed_Items(requestuser);
-    response.render("todos", {
-      title: "Todo application",
-      overdue,
-      dueToday,
-      dueLater,
-      Completed_Items,
-      csrfToken: request.csrfToken(),
-    });
+  async (request, response) => {
+    const loggedInUser = request.user.id;
+    const allTodos = await Todo.getTodos();
+    const overdue = await Todo.overdue(loggedInUser);
+    const dueLater = await Todo.dueLater(loggedInUser);
+    const dueToday = await Todo.dueToday(loggedInUser);
+    const completedItems = await Todo.completed_Items(loggedInUser);
+    if (request.accepts("html")) {
+      response.render("todos", {
+        title: "Todo Application",
+        overdue,
+        dueToday,
+        dueLater,
+        completedItems,
+        csrfToken: request.csrfToken(),
+      });
+    } else {
+      response.json({ overdue, dueToday, dueLater, completedItems });
+    }
   }
 );
 /* eslint-disable-next-line no-unused-vars */
@@ -197,6 +202,10 @@ app.post(
     }
     if (request.body.dueDate.length == 0) {
       request.flash("error", "Due date can not be empty!");
+      return response.redirect("/todos");
+    }
+    if (request.body.title.length < 5) {
+      request.flash("error", "Title can not be less than 5!");
       return response.redirect("/todos");
     }
     console.log("creating new todo", request.body);

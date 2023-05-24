@@ -84,7 +84,7 @@
         <%- include('todo.ejs',{title:"overdue",data:overdue}) %>
         <%- include('todo.ejs',{title:"dueToday",data:dueToday}) %>
         <%- include('todo.ejs',{title:"dueLater",data:dueLater}) %>
-        <%- include('todo.ejs',{title:"completed todos",data:Completed_Items}) %>
+        <%- include('todo.ejs',{title:"completed todos",data:completedItems}) %>
         <% if(messages && messages.error && messages.error.length > 0)  { %>
           <% for(var i=0; i<messages.error.length; i++) { %>
             <p class="bg-red-200 my-3 list-none rounded px-4 py-2"><%= messages.error[i] %></p>
