@@ -12,7 +12,7 @@ const connectEnsureLogin = require("connect-ensure-login");
 const session = require("express-session");
 const LocalStrategy = require("passport-local");
 const flash = require("connect-flash");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 
 const saltRounds = 10;
 app.set("views", path.join(__dirname, "views"));
