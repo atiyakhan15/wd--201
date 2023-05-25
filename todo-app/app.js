@@ -111,29 +111,72 @@ app.post(
   }
 );
 app.post("/users", async (request, response) => {
-  if (request.body.email.length == 0) {
-    request.flash("error", "Email can not be empty!");
-    return response.redirect("/signup");
-  }
-
-  if (request.body.firstName.length == 0) {
-    request.flash("error", "First name can not be empty!");
-    return response.redirect("/signup");
-  }
-  if (request.body.password.length < 8) {
-    request.flash("error", "Password length should be minimun 8");
-    return response.redirect("/signup");
-  }
-  const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
-  console.log(hashedPwd);
-
   try {
+    const alreadyemail = await User.findOne({
+      where: { email: request.body.email }
+    });
+    console.log("alreadyemail:", alreadyemail);
+
+    const alreadyfname = await User.findOne({
+      where: { firstName: request.body.firstName }
+    });
+    console.log("alreadyfname:", alreadyfname);
+
+    const alreadylname = await User.findOne({
+      where: { lastName: request.body.lastName }
+    });
+    console.log("alreadylname:", alreadylname);
+
+    const alreadypassword = await User.findOne({
+      where: { password: request.body.password }
+    });
+    console.log("alreadypassword:", alreadypassword);
+
+    if (alreadyemail) {
+      request.flash("error", "Email already registered. Please try logging in or use a different email.");
+      return response.redirect("/signup");
+    }
+
+    if (alreadylname) {
+      request.flash("error", "Last name already in use. Please choose a different last name.");
+      return response.redirect("/signup");
+    }
+
+    if (alreadypassword) {
+      request.flash("error", "Password already in use. Please choose a different password.");
+      return response.redirect("/signup");
+    }
+
+    if (alreadyfname) {
+      request.flash("error", "First name already in use. Please choose a different first name.");
+      return response.redirect("/signup");
+    }
+
+    if (request.body.email.length === 0) {
+      request.flash("error", "Email cannot be empty!");
+      return response.redirect("/signup");
+    }
+
+    if (request.body.firstName.length === 0) {
+      request.flash("error", "First name cannot be empty!");
+      return response.redirect("/signup");
+    }
+
+    if (request.body.password.length < 8) {
+      request.flash("error", "Password length should be a minimum of 8 characters.");
+      return response.redirect("/signup");
+    }
+
+    const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
+    console.log(hashedPwd);
+
     const user = await User.create({
       firstName: request.body.firstName,
       lastName: request.body.lastName,
       email: request.body.email,
       password: hashedPwd,
     });
+
     request.login(user, (err) => {
       if (err) {
         console.log(err);
