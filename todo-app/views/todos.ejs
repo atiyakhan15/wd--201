@@ -49,6 +49,7 @@
     <div class="grid grid-cols-6">
       <div class="col-start-3 col-span-2">
         <%- include("header.ejs") %>
+       <marquee> <h1 class="text-2xl font-semibold text-rose-600">hi <%= title %> welcome to your todo-list</h1></marquee>
         
         <form action="/todos" method="POST">
   <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
