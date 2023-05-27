@@ -116,42 +116,10 @@ app.post("/users", async (request, response) => {
       where: { email: request.body.email }
     });
     console.log("alreadyemail:", alreadyemail);
-
-    const alreadyfname = await User.findOne({
-      where: { firstName: request.body.firstName }
-    });
-    console.log("alreadyfname:", alreadyfname);
-
-    const alreadylname = await User.findOne({
-      where: { lastName: request.body.lastName }
-    });
-    console.log("alreadylname:", alreadylname);
-
-    const alreadypassword = await User.findOne({
-      where: { password: request.body.password }
-    });
-    console.log("alreadypassword:", alreadypassword);
-
     if (alreadyemail) {
       request.flash("error", "Email already registered. Please try logging in or use a different email.");
       return response.redirect("/signup");
     }
-
-    if (alreadylname) {
-      request.flash("error", "Last name already in use. Please choose a different last name.");
-      return response.redirect("/signup");
-    }
-
-    if (alreadypassword) {
-      request.flash("error", "Password already in use. Please choose a different password.");
-      return response.redirect("/signup");
-    }
-
-    if (alreadyfname) {
-      request.flash("error", "First name already in use. Please choose a different first name.");
-      return response.redirect("/signup");
-    }
-
     if (request.body.email.length === 0) {
       request.flash("error", "Email cannot be empty!");
       return response.redirect("/signup");
